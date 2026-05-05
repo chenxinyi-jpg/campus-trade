@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 校园二手交易平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">校园二手交易平台</a>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users">用户列表</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="max-width: 450px; margin: 3rem auto;">
+            <div class="card-body">
+                <h2 style="text-align: center; margin-bottom: 2rem;">用户登录</h2>
+
+                <form method="POST">
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" name="username" class="form-control" required placeholder="请输入用户名">
+                    </div>
+
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" name="password" class="form-control" required placeholder="请输入密码">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">登录</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p>还没有账号？<a href="/register" style="color: var(--primary-color);">立即注册</a></p>
+                </div>
+
+                <div class="card" style="margin-top: 2rem; background: var(--light-gray);">
+                    <div class="card-body" style="padding: 1rem;">
+                        <h4 style="margin-bottom: 0.5rem;">测试账号</h4>
+                        <p style="font-size: 0.9rem; color: #666;">
+                            用户名: <strong>张三</strong> / 密码: <strong>123456</strong><br>
+                            用户名: <strong>李四</strong> / 密码: <strong>123456</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        alert('{{ message }}');
+        {% endfor %}
+        {% endwith %}
+    </script>
+</body>
+</html>

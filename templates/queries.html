@@ -4,201 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>查询功能 - 校园二手交易平台</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background: #f5f7fa;
-            min-height: 100vh;
-        }
-        .navbar {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .nav-links a:hover, .nav-links a.active {
-            background: #667eea;
-            color: white;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        .header {
-            margin-bottom: 2rem;
-        }
-        .header h1 {
-            color: #333;
-        }
-
-        /* 查询区域样式 */
-        .query-section {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        .query-section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .query-section h2 .icon {
-            font-size: 1.5rem;
-        }
-        .query-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            background: #edf2f7;
-            color: #333;
-        }
-        .btn:hover {
-            background: #667eea;
-            color: white;
-        }
-        .btn.active {
-            background: #667eea;
-            color: white;
-        }
-
-        /* 结果表格样式 */
-        .result-section {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .result-header h3 {
-            color: #333;
-        }
-        .result-count {
-            color: #667eea;
-            font-weight: 600;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #333;
-        }
-        tr:hover {
-            background: #f8fafc;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        .status-unsold { background: #c6f6d5; color: #276749; }
-        .status-sold { background: #fed7d7; color: #c53030; }
-        .empty-result {
-            text-align: center;
-            padding: 2rem;
-            color: #888;
-        }
-
-        /* 统计卡片 */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-        .stat-label {
-            opacity: 0.9;
-            font-size: 0.9rem;
-        }
-        .category-stat {
-            background: #edf2f7;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-        .category-stat h4 {
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-        .category-bar {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.3rem 0;
-        }
-        .category-name {
-            width: 100px;
-            font-size: 0.9rem;
-        }
-        .category-count {
-            font-weight: bold;
-            color: #667eea;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">校园二手交易平台</div>
+            <a href="/" class="logo">校园二手交易平台</a>
             <div class="nav-links">
                 <a href="/">首页</a>
                 <a href="/items">商品列表</a>
@@ -206,13 +17,25 @@
                 <a href="/orders">订单列表</a>
                 <a href="/queries" class="active">查询功能</a>
             </div>
+            <div class="nav-auth">
+                {% if session.user_id %}
+                <div class="user-menu">
+                    <a href="/cart" style="font-size:1.25rem;" title="购物车">🛒</a>
+                    <a href="/user/{{ session.user_id }}" class="user-avatar" title="{{ session.username }}">
+                        {{ session.username[0] }}
+                    </a>
+                    <a href="/logout">退出</a>
+                </div>
+                {% else %}
+                <a href="/login" class="btn-login">登录</a>
+                <a href="/register" class="btn-register">注册</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
     <div class="container">
-        <div class="header">
-            <h1>查询功能</h1>
-        </div>
+        <h1 style="margin-bottom: 1.5rem;">查询功能</h1>
 
         <!-- 聚合统计 -->
         <div class="stats-grid" id="statsGrid">
@@ -220,73 +43,101 @@
                 <div class="stat-value" id="totalItems">-</div>
                 <div class="stat-label">商品总数</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="background: linear-gradient(135deg, #48bb78, #38a169);">
                 <div class="stat-value" id="avgPrice">-</div>
                 <div class="stat-label">平均价格(元)</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="background: linear-gradient(135deg, #ed8936, #dd6b20);">
                 <div class="stat-value" id="topSeller">-</div>
                 <div class="stat-label">商品最多的用户</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="background: linear-gradient(135deg, #4299e1, #3182ce);">
                 <div class="stat-value" id="topSellerCount">-</div>
                 <div class="stat-label">发布商品数</div>
             </div>
         </div>
 
         <!-- 分类统计 -->
-        <div class="result-section">
-            <div class="category-stat">
-                <h4>各类商品数量统计</h4>
-                <div id="categoryStats"></div>
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3>各类商品数量统计</h3>
+            </div>
+            <div class="card-body" id="categoryStats">
+                <p style="color: #888;">加载中...</p>
             </div>
         </div>
 
-        <!-- 基本查询 -->
-        <div class="query-section">
-            <h2><span class="icon">🔍</span> 基本查询</h2>
-            <div class="query-buttons">
-                <button class="btn" onclick="queryUnsold()">未售出商品</button>
-                <button class="btn" onclick="queryPriceAbove()">价格>30元</button>
-                <button class="btn" onclick="queryCategory('生活用品')">生活用品</button>
-                <button class="btn" onclick="queryCategory('电子产品')">电子产品</button>
-                <button class="btn" onclick="queryCategory('学习资料')">学习资料</button>
-                <button class="btn" onclick="queryBySeller('u001')">u001的商品</button>
-                <button class="btn" onclick="queryBySeller('u002')">u002的商品</button>
+        <!-- 查询按钮区 -->
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+                <h3>基本查询</h3>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <button class="btn btn-outline" onclick="queryUnsold()">未售出商品</button>
+                    <button class="btn btn-outline" onclick="queryPriceAbove()">价格>30元</button>
+                    <button class="btn btn-outline" onclick="queryCategory('生活用品')">生活用品</button>
+                    <button class="btn btn-outline" onclick="queryCategory('电子产品')">电子产品</button>
+                    <button class="btn btn-outline" onclick="queryCategory('学习资料')">学习资料</button>
+                    <button class="btn btn-outline" onclick="queryBySeller('u001')">u001的商品</button>
+                    <button class="btn btn-outline" onclick="queryBySeller('u002')">u002的商品</button>
+                </div>
             </div>
         </div>
 
-        <!-- 连接查询 -->
-        <div class="query-section">
-            <h2><span class="icon">🔗</span> 连接查询</h2>
-            <div class="query-buttons">
-                <button class="btn" onclick="querySoldWithBuyer()">已售商品+买家</button>
-                <button class="btn" onclick="queryOrderDetails()">订单详情</button>
-                <button class="btn" onclick="querySellerStatus('u001')">u001的商品销售状态</button>
-                <button class="btn" onclick="querySellerStatus('u003')">u003的商品销售状态</button>
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+                <h3>连接查询</h3>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <button class="btn btn-outline" onclick="querySoldWithBuyer()">已售商品+买家</button>
+                    <button class="btn btn-outline" onclick="queryOrderDetails()">订单详情</button>
+                    <button class="btn btn-outline" onclick="querySellerStatus('u001')">u001销售状态</button>
+                    <button class="btn btn-outline" onclick="querySellerStatus('u003')">u003销售状态</button>
+                </div>
             </div>
         </div>
 
-        <!-- 视图查询 -->
-        <div class="query-section">
-            <h2><span class="icon">📋</span> 视图查询</h2>
-            <div class="query-buttons">
-                <button class="btn" onclick="viewSold()">已售商品视图</button>
-                <button class="btn" onclick="viewUnsold()">未售商品视图</button>
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+                <h3>视图查询</h3>
+            </div>
+            <div class="card-body">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <button class="btn btn-outline" onclick="viewSold()">已售商品视图</button>
+                    <button class="btn btn-outline" onclick="viewUnsold()">未售商品视图</button>
+                </div>
             </div>
         </div>
 
         <!-- 查询结果 -->
-        <div class="result-section" id="resultSection" style="display:none;">
-            <div class="result-header">
+        <div class="card" id="resultSection" style="display: none;">
+            <div class="card-header">
                 <h3 id="resultTitle">查询结果</h3>
-                <span class="result-count" id="resultCount"></span>
+                <span id="resultCount" style="color: var(--primary-color);"></span>
             </div>
-            <div id="resultContent"></div>
+            <div class="card-body">
+                <div class="table-wrapper">
+                    <table id="resultTable">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
         // 加载统计数据
         async function loadStats() {
             try {
@@ -309,14 +160,19 @@
 
                 // 渲染分类统计
                 const catContainer = document.getElementById('categoryStats');
+                if (cats.length === 0) {
+                    catContainer.innerHTML = '<p style="color: #888;">暂无数据</p>';
+                    return;
+                }
+
                 const maxCount = Math.max(...cats.map(c => c.count), 1);
                 catContainer.innerHTML = cats.map(cat => `
-                    <div class="category-bar">
-                        <span class="category-name">${cat.category}</span>
-                        <div style="flex:1;background:#e2e8f0;height:20px;border-radius:4px;overflow:hidden;">
-                            <div style="width:${(cat.count/maxCount)*100}%;background:#667eea;height:100%;"></div>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin: 0.5rem 0;">
+                        <span style="width: 100px;">${cat.category}</span>
+                        <div style="flex: 1; background: var(--light-gray); height: 24px; border-radius: 12px; overflow: hidden;">
+                            <div style="width: ${(cat.count / maxCount) * 100}%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); height: 100%;"></div>
                         </div>
-                        <span class="category-count">${cat.count}</span>
+                        <span style="font-weight: bold; color: var(--primary-color); width: 30px;">${cat.count}</span>
                     </div>
                 `).join('');
             } catch (e) {
@@ -327,137 +183,88 @@
         // 显示结果
         function showResult(title, data, columns) {
             const section = document.getElementById('resultSection');
-            const titleEl = document.getElementById('resultTitle');
-            const countEl = document.getElementById('resultCount');
-            const contentEl = document.getElementById('resultContent');
-
-            titleEl.textContent = title;
-            countEl.textContent = `${data.length} 条记录`;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultCount').textContent = `${data.length} 条记录`;
             section.style.display = 'block';
 
+            const thead = document.querySelector('#resultTable thead');
+            const tbody = document.querySelector('#resultTable tbody');
+
+            thead.innerHTML = `<tr>${columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+
             if (data.length === 0) {
-                contentEl.innerHTML = '<div class="empty-result">暂无数据</div>';
+                tbody.innerHTML = '<tr><td colspan="' + columns.length + '" style="text-align: center; color: #888; padding: 2rem;">暂无数据</td></tr>';
                 return;
             }
 
-            const headers = columns.map(c => `<th>${c.label}</th>`).join('');
-            const rows = data.map(item => {
-                return '<tr>' + columns.map(c => {
-                    let val = item[c.key];
-                    if (c.transform) val = c.transform(val, item);
-                    return `<td>${val || '-'}</td>`;
+            tbody.innerHTML = data.map(item => {
+                return '<tr>' + columns.map((c, i) => {
+                    let val = item[Object.keys(item)[i]];
+                    if (val === null || val === undefined) val = '-';
+                    if (typeof val === 'number' && c.includes('价格')) val = '¥' + val.toFixed(2);
+                    if (typeof val === 'number' && c.includes('状态')) val = val === 0 ? '未售' : '已售';
+                    return `<td>${val}</td>`;
                 }).join('') + '</tr>';
             }).join('');
 
-            contentEl.innerHTML = `<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table>`;
+            section.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ========== 基本查询 ==========
+        // 基本查询
         async function queryUnsold() {
             const res = await fetch('/api/query/unsold');
             const data = await res.json();
-            showResult('未售出商品', data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'category', label:'分类'},
-                {key:'seller_id', label:'卖家ID'}
-            ]);
+            showResult('未售出商品', data, ['item_id', 'item_name', 'price', 'category', 'seller_id']);
         }
 
         async function queryPriceAbove() {
             const res = await fetch('/api/query/price_above/30');
             const data = await res.json();
-            showResult('价格大于30元的商品', data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'category', label:'分类'},
-                {key:'status', label:'状态', transform: v => v === 0 ? '<span class="status-badge status-unsold">未售出</span>' : '<span class="status-badge status-sold">已售出</span>'}
-            ]);
+            showResult('价格大于30元的商品', data, ['item_id', 'item_name', 'price', 'category', 'status']);
         }
 
         async function queryCategory(cat) {
             const res = await fetch(`/api/query/category/${encodeURIComponent(cat)}`);
             const data = await res.json();
-            showResult(`"${cat}"类商品`, data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'seller_id', label:'卖家ID'},
-                {key:'status', label:'状态', transform: v => v === 0 ? '<span class="status-badge status-unsold">未售出</span>' : '<span class="status-badge status-sold">已售出</span>'}
-            ]);
+            showResult(`"${cat}"类商品`, data, ['item_id', 'item_name', 'price', 'seller_id', 'status']);
         }
 
         async function queryBySeller(sellerId) {
             const res = await fetch(`/api/query/seller/${sellerId}`);
             const data = await res.json();
-            showResult(`卖家 ${sellerId} 的商品`, data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'category', label:'分类'},
-                {key:'status', label:'状态', transform: v => v === 0 ? '<span class="status-badge status-unsold">未售出</span>' : '<span class="status-badge status-sold">已售出</span>'}
-            ]);
+            showResult(`卖家 ${sellerId} 的商品`, data, ['item_id', 'item_name', 'price', 'category', 'status']);
         }
 
-        // ========== 连接查询 ==========
+        // 连接查询
         async function querySoldWithBuyer() {
             const res = await fetch('/api/query/sold_with_buyer');
             const data = await res.json();
-            showResult('已售商品及其买家', data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'buyer_name', label:'买家姓名'}
-            ]);
+            showResult('已售商品及其买家', data, ['item_id', 'item_name', 'price', 'buyer_name']);
         }
 
         async function queryOrderDetails() {
             const res = await fetch('/api/query/order_details');
             const data = await res.json();
-            showResult('订单详情（商品名+买家+日期）', data, [
-                {key:'order_id', label:'订单ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'buyer_name', label:'买家姓名'},
-                {key:'order_date', label:'订单日期', transform: v => new Date(v).toLocaleString('zh-CN')}
-            ]);
+            showResult('订单详情（商品名+买家+日期）', data, ['order_id', 'item_name', 'buyer_name', 'order_date']);
         }
 
         async function querySellerStatus(sellerId) {
             const res = await fetch(`/api/query/seller_sold_status/${sellerId}`);
             const data = await res.json();
-            showResult(`卖家 ${sellerId} 商品销售状态`, data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'sale_status', label:'销售状态', transform: v => v === '已售' ? '<span class="status-badge status-sold">已售</span>' : '<span class="status-badge status-unsold">未售</span>'},
-                {key:'buyer_id', label:'买家ID'}
-            ]);
+            showResult(`卖家 ${sellerId} 商品销售状态`, data, ['item_id', 'item_name', 'sale_status', 'buyer_id']);
         }
 
-        // ========== 视图查询 ==========
+        // 视图查询
         async function viewSold() {
             const res = await fetch('/api/view/sold');
             const data = await res.json();
-            showResult('已售商品视图', data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'category', label:'分类'},
-                {key:'buyer_id', label:'买家ID'}
-            ]);
+            showResult('已售商品视图', data, ['item_id', 'item_name', 'price', 'category', 'buyer_id']);
         }
 
         async function viewUnsold() {
             const res = await fetch('/api/view/unsold');
             const data = await res.json();
-            showResult('未售商品视图', data, [
-                {key:'item_id', label:'商品ID'},
-                {key:'item_name', label:'商品名称'},
-                {key:'price', label:'价格', transform: v => '¥' + v.toFixed(2)},
-                {key:'category', label:'分类'},
-                {key:'seller_id', label:'卖家ID'}
-            ]);
+            showResult('未售商品视图', data, ['item_id', 'item_name', 'price', 'category', 'seller_id']);
         }
 
         loadStats();

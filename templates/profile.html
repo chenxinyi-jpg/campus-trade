@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} - 校园二手交易平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">校园二手交易平台</a>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users">用户列表</a>
+                <a href="/orders">订单列表</a>
+                <a href="/queries">查询功能</a>
+            </div>
+            <div class="nav-auth">
+                {% if session.user_id %}
+                <div class="user-menu">
+                    <a href="/cart" style="font-size:1.25rem;" title="购物车">🛒</a>
+                    <a href="/user/{{ session.user_id }}" class="user-avatar" title="{{ session.username }}">
+                        {{ session.username[0] }}
+                    </a>
+                    <a href="/logout">退出</a>
+                </div>
+                {% else %}
+                <a href="/login" class="btn-login">登录</a>
+                <a href="/register" class="btn-register">注册</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 用户信息 -->
+        <div class="card">
+            <div class="card-body" style="display: flex; align-items: center; gap: 2rem;">
+                <div class="user-avatar-lg" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                    {{ user.username[0] }}
+                </div>
+                <div>
+                    <h1 style="margin-bottom: 0.5rem;">{{ user.username }}</h1>
+                    <p style="color: #888;">
+                        ID: {{ user.user_id }} | 
+                        邮箱: {{ user.email or '未填写' }} | 
+                        电话: {{ user.phone or '未填写' }}
+                    </p>
+                    <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;">
+                        注册时间: {{ user.created_at }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 标签页 -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('items')">发布的商品 ({{ items|length }})</div>
+                <div class="tab" onclick="switchTab('orders')">购买订单 ({{ orders|length }})</div>
+            </div>
+
+            <!-- 商品列表 -->
+            <div id="tab-items" class="tab-content active">
+                {% if items %}
+                <div class="products-grid" style="padding: 1rem;">
+                    {% for item in items %}
+                    <div class="product-card">
+                        <a href="/item/{{ item.item_id }}" class="product-image">
+                            📦
+                            <span class="product-badge {{ 'badge-unsold' if item.status == 0 else 'badge-sold' }}">
+                                {{ '在售' if item.status == 0 else '已售' }}
+                            </span>
+                        </a>
+                        <div class="product-info">
+                            <a href="/item/{{ item.item_id }}" class="product-name">{{ item.item_name }}</a>
+                            <div class="product-price">
+                                ¥{{ "%.2f"|format(item.price) }}
+                            </div>
+                            <span class="product-category">{{ item.category }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="icon">📦</div>
+                    <h3>暂无发布商品</h3>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- 订单列表 -->
+            <div id="tab-orders" class="tab-content">
+                {% if orders %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>订单号</th>
+                                <th>商品</th>
+                                <th>金额</th>
+                                <th>时间</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td><code>{{ order.order_id }}</code></td>
+                                <td>{{ order.item_name }}</td>
+                                <td style="color: var(--primary-color);">¥{{ "%.2f"|format(order.total_price) }}</td>
+                                <td>{{ order.order_date }}</td>
+                                <td><span class="badge badge-success">{{ order.status }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="icon">📋</div>
+                    <h3>暂无订单</h3>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+    </script>
+</body>
+</html>

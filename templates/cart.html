@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车 - 校园二手交易平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">校园二手交易平台</a>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users">用户列表</a>
+                <a href="/orders">订单列表</a>
+                <a href="/queries">查询功能</a>
+            </div>
+            <div class="nav-auth">
+                <div class="user-menu">
+                    <a href="/cart" style="font-size:1.25rem;" title="购物车">🛒</a>
+                    <a href="/user/{{ session.user_id }}" class="user-avatar" title="{{ session.username }}">
+                        {{ session.username[0] }}
+                    </a>
+                    <a href="/logout">退出</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="margin-bottom: 1.5rem;">我的购物车</h1>
+
+        {% if cart_items %}
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- 购物车商品 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>商品列表 ({{ cart_items|length }})</h3>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="cart-item" style="{{ 'opacity: 0.5;' if item.status == 1 else '' }}">
+                        <div class="cart-item-image">📦</div>
+                        <div class="cart-item-info">
+                            <h4>
+                                <a href="/item/{{ item.item_id }}">{{ item.item_name }}</a>
+                                {% if item.status == 1 %}
+                                <span class="badge badge-danger">已售出</span>
+                                {% endif %}
+                            </h4>
+                            <p style="color: #888;">分类: {{ item.category }} | 卖家: {{ item.seller_name }}</p>
+                            <p style="color: var(--primary-color); font-weight: bold; font-size: 1.25rem;">
+                                ¥{{ "%.2f"|format(item.price) }}
+                            </p>
+                        </div>
+                        <div>
+                            {% if item.status == 0 %}
+                            <button class="btn btn-danger btn-sm" onclick="removeFromCart('{{ item.item_id }}')">删除</button>
+                            {% else %}
+                            <span style="color: #888;">商品已下架</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 结算 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>结算信息</h3>
+                </div>
+                <div class="card-body">
+                    <div class="cart-summary">
+                        <div class="cart-total">
+                            <span>商品总价</span>
+                            <span class="price">¥{{ "%.2f"|format(total) }}</span>
+                        </div>
+                        <button class="btn btn-success btn-lg" style="width: 100%;" onclick="checkout()">
+                            结算 ({{ cart_items|length }})
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="icon">🛒</div>
+            <h3>购物车是空的</h3>
+            <p>快去挑选心仪的商品吧！</p>
+            <a href="/items" class="btn btn-primary" style="margin-top: 1rem;">浏览商品</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        async function removeFromCart(itemId) {
+            try {
+                const res = await fetch(`/api/cart/remove/${itemId}`, {
+                    method: 'POST'
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('已从购物车移除');
+                    setTimeout(() => location.reload(), 500);
+                } else {
+                    showToast(result.error || '移除失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+
+        async function checkout() {
+            if (!confirm('确定要购买购物车中的所有商品吗？')) return;
+
+            try {
+                const res = await fetch('/api/buy_cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    showToast(`购买成功！创建了 ${result.order_ids.length} 个订单`);
+                    setTimeout(() => window.location.href = '/orders', 1500);
+                } else {
+                    showToast(result.error || '购买失败', 'error');
+                }
+            } catch (e) {
+                showToast('网络错误', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

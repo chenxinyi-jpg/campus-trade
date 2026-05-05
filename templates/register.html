@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 校园二手交易平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">校园二手交易平台</a>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users">用户列表</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="max-width: 500px; margin: 3rem auto;">
+            <div class="card-body">
+                <h2 style="text-align: center; margin-bottom: 2rem;">用户注册</h2>
+
+                <form method="POST">
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" name="username" class="form-control" required placeholder="设置用户名">
+                    </div>
+
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" name="password" class="form-control" required placeholder="设置密码">
+                    </div>
+
+                    <div class="form-group">
+                        <label>邮箱</label>
+                        <input type="email" name="email" class="form-control" placeholder="选填">
+                    </div>
+
+                    <div class="form-group">
+                        <label>手机号</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="选填">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">注册</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p>已有账号？<a href="/login" style="color: var(--primary-color);">立即登录</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        alert('{{ message }}');
+        {% endfor %}
+        {% endwith %}
+    </script>
+</body>
+</html>
