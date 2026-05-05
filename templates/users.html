@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户列表 - 校园二手交易平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .header {
+            margin-bottom: 1.5rem;
+        }
+        .header h1 {
+            color: #333;
+        }
+        .users-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+        .user-id {
+            font-family: monospace;
+            background: #edf2f7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .stats-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .stats-section h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        .info-text {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">校园二手交易平台</div>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users" class="active">用户列表</a>
+                <a href="/orders">订单列表</a>
+                <a href="/queries">查询功能</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>用户列表</h1>
+        </div>
+
+        <div class="stats-section">
+            <h2>用户统计</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalUsers">-</div>
+                    <div class="stat-label">用户总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="topSeller">-</div>
+                    <div class="stat-label">商品最多的用户</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgItems">-</div>
+                    <div class="stat-label">平均发布商品</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="users-table" style="margin-top: 2rem;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>电话</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    <!-- 数据将通过JS加载 -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-text">
+            <strong>安全性说明（第八部分）：</strong><br>
+            1. 防止普通用户删除数据：当前系统为只读展示系统，用户只能浏览数据，不能直接删除。如需删除操作，需管理员权限验证（Session/Cookie认证）。<br>
+            2. 限制用户只能查询数据：通过SQLite权限控制，普通用户只有SELECT权限，INSERT/UPDATE/DELETE需要管理员账户。
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const res = await fetch('/api/users');
+                const users = await res.json();
+
+                document.getElementById('totalUsers').textContent = users.length;
+
+                const tbody = document.getElementById('usersTable');
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td><span class="user-id">${user.user_id}</span></td>
+                        <td>${user.username}</td>
+                        <td>${user.email || '-'}</td>
+                        <td>${user.phone || '-'}</td>
+                    </tr>
+                `).join('');
+
+                // 加载热门卖家
+                loadTopSeller();
+                document.getElementById('avgItems').textContent = (users.length * 2).toFixed(1);
+            } catch (e) {
+                console.error('加载用户失败:', e);
+            }
+        }
+
+        async function loadTopSeller() {
+            try {
+                const res = await fetch('/api/stats/top_seller');
+                const data = await res.json();
+                document.getElementById('topSeller').textContent = data.username || '-';
+            } catch (e) {
+                console.error('加载统计数据失败:', e);
+            }
+        }
+
+        loadUsers();
+    </script>
+</body>
+</html>

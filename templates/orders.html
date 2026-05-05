@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单列表 - 校园二手交易平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .header {
+            margin-bottom: 1.5rem;
+        }
+        .header h1 {
+            color: #333;
+        }
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+        .order-id {
+            font-family: monospace;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .order-item {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            color: #555;
+        }
+        .order-row span:first-child {
+            color: #888;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+        }
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .info-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .info-section h2 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .info-section p {
+            margin-bottom: 0.8rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .info-section .highlight {
+            background: #edf2f7;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">校园二手交易平台</div>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="/items">商品列表</a>
+                <a href="/users">用户列表</a>
+                <a href="/orders" class="active">订单列表</a>
+                <a href="/queries">查询功能</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>订单列表</h1>
+        </div>
+
+        <div class="orders-grid" id="ordersGrid">
+            <!-- 订单卡片将通过JS加载 -->
+        </div>
+
+        <div class="info-section">
+            <h2>并发与恢复说明（第九部分）</h2>
+            <p><strong>1. 两个用户同时购买同一商品会出现什么问题？</strong></p>
+            <p>如果两个用户同时点击购买同一商品，可能导致：</p>
+            <p>&nbsp;&nbsp;- 多个订单记录被创建（违反orders表的item_id唯一约束）</p>
+            <p>&nbsp;&nbsp;- 商品状态不一致（库存超卖）</p>
+            <p>&nbsp;&nbsp;- 数据完整性被破坏</p>
+
+            <p style="margin-top:1rem;"><strong>2. 如何解决（例如加锁/事务）？</strong></p>
+            <p>本系统使用<span class="highlight">数据库事务 + 唯一约束</span>来解决：</p>
+            <p>&nbsp;&nbsp;- 在购买操作中使用事务（ BEGIN TRANSACTION）</p>
+            <p>&nbsp;&nbsp;- <span class="highlight">orders.item_id UNIQUE</span> 约束防止重复订单</p>
+            <p>&nbsp;&nbsp;- 检查商品状态后再更新（防止双重购买）</p>
+            <p>&nbsp;&nbsp;- 事务失败时自动回滚</p>
+
+            <p style="margin-top:1rem;"><strong>3. 如果系统崩溃，如何恢复订单数据？</strong></p>
+            <p>&nbsp;&nbsp;- SQLite使用WAL模式，支持自动恢复</p>
+            <p>&nbsp;&nbsp;- 事务日志确保ACID特性</p>
+            <p>&nbsp;&nbsp;- 定期备份数据库文件</p>
+            <p>&nbsp;&nbsp;- 可部署到云数据库（如PostgreSQL）获得更好的持久性</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadOrders() {
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                renderOrders(orders);
+            } catch (e) {
+                console.error('加载订单失败:', e);
+            }
+        }
+
+        function renderOrders(orders) {
+            const grid = document.getElementById('ordersGrid');
+
+            if (orders.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="icon">📋</div>
+                        <p>暂无订单记录</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">${order.order_id}</span>
+                        <span style="color:#888;font-size:0.85rem;">${new Date(order.order_date).toLocaleString('zh-CN')}</span>
+                    </div>
+                    <div class="order-item">${order.item_name}</div>
+                    <div class="order-info">
+                        <div class="order-row">
+                            <span>买家</span>
+                            <span>${order.buyer_name}</span>
+                        </div>
+                        <div class="order-row">
+                            <span>买家ID</span>
+                            <span class="highlight">${order.buyer_id}</span>
+                        </div>
+                        <div class="order-row">
+                            <span>商品ID</span>
+                            <span class="highlight">${order.item_id}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        loadOrders();
+    </script>
+</body>
+</html>
