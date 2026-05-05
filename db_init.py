@@ -4,6 +4,7 @@
 """
 
 import sqlite3
+from datetime import datetime
 
 def init_database():
     """初始化数据库"""
@@ -77,8 +78,8 @@ def init_database():
 
     # 订单数据（已售出的商品）
     orders = [
-        ('o001', 'i004', 'u003', datetime('now')),
-        ('o002', 'i007', 'u001', datetime('now')),
+        ('o001', 'i004', 'u003'),
+        ('o002', 'i007', 'u001'),
     ]
     cursor.executemany('''
         INSERT OR IGNORE INTO orders (order_id, item_id, buyer_id, order_date)
