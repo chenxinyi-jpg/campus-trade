@@ -947,6 +947,27 @@ def not_found(e):
     return render_template('index.html'), 404
 
 
-if __name__ == '__main__':
+# ========== 初始化路由（用于云端部署） ==========
+
+@app.route('/init')
+def init_route():
+    """初始化数据库表和数据"""
     init_database()
+    return '''
+    <html>
+    <head><title>初始化完成</title></head>
+    <body>
+        <h1>数据库初始化完成！</h1>
+        <p>点击访问：<a href="/">首页</a></p>
+    </body>
+    </html>
+    '''
+
+
+# 确保应用启动时初始化数据库（云端部署需要）
+with app.app_context():
+    init_database()
+
+
+if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
