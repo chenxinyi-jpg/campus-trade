@@ -265,6 +265,15 @@ def register():
         email = request.form.get('email', '')
         phone = request.form.get('phone', '')
 
+        # 验证手机号格式（中国手机号11位）
+        if phone and len(phone) != 11:
+            flash('手机号必须为11位数字！', 'danger')
+            return render_template('register.html')
+
+        if not phone.isdigit() if phone else False:
+            flash('手机号必须为纯数字！', 'danger')
+            return render_template('register.html')
+
         password_hash = hashlib.md5(password.encode()).hexdigest()
 
         conn = get_db()
@@ -958,6 +967,24 @@ def init_route():
     <head><title>初始化完成</title></head>
     <body>
         <h1>数据库初始化完成！</h1>
+        <p>点击访问：<a href="/">首页</a></p>
+    </body>
+    </html>
+    '''
+
+@app.route('/reset')
+def reset_route():
+    """重置数据库（删除所有数据后重新初始化）"""
+    import os
+    db_path = DATABASE
+    if os.path.exists(db_path):
+        os.remove(db_path)
+    init_database()
+    return '''
+    <html>
+    <head><title>数据库重置</title></head>
+    <body>
+        <h1>数据库已重置！</h1>
         <p>点击访问：<a href="/">首页</a></p>
     </body>
     </html>
