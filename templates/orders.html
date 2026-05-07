@@ -83,38 +83,6 @@
             <a href="/items" class="btn btn-primary" style="margin-top: 1rem;">去购物</a>
         </div>
         {% endif %}
-
-        <!-- 并发与恢复说明 -->
-        <div class="card" style="margin-top: 2rem;">
-            <div class="card-header">
-                <h3>并发与恢复说明（第九部分）</h3>
-            </div>
-            <div class="card-body">
-                <div style="line-height: 1.8;">
-                    <p><strong>1. 两个用户同时购买同一商品会出现什么问题？</strong></p>
-                    <p style="padding-left: 1rem; color: #666;">
-                        可能导致：① 多个订单记录被创建（超卖）；② 商品状态不一致；③ 违反数据完整性约束
-                    </p>
-
-                    <p style="margin-top: 1rem;"><strong>2. 如何解决（加锁/事务）？</strong></p>
-                    <p style="padding-left: 1rem; color: #666;">
-                        本系统使用以下机制：<br>
-                        ① <strong>数据库事务</strong>：BEGIN TRANSACTION 确保原子性<br>
-                        ② <strong>唯一约束</strong>：orders.item_id UNIQUE 防止重复订单<br>
-                        ③ <strong>状态检查</strong>：购买前检查商品状态<br>
-                        ④ <strong>自动回滚</strong>：事务失败时自动回滚
-                    </p>
-
-                    <p style="margin-top: 1rem;"><strong>3. 系统崩溃如何恢复订单数据？</strong></p>
-                    <p style="padding-left: 1rem; color: #666;">
-                        ① SQLite 使用 WAL 模式，支持自动恢复<br>
-                        ② 事务日志确保 ACID 特性<br>
-                        ③ 定期备份数据库文件<br>
-                        ④ 可部署到云数据库获得更好的持久性
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>

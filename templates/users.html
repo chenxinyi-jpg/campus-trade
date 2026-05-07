@@ -89,32 +89,6 @@
                 </table>
             </div>
         </div>
-
-        <!-- 安全性说明 -->
-        <div class="card" style="margin-top: 2rem;">
-            <div class="card-header">
-                <h3>安全性说明（第八部分）</h3>
-            </div>
-            <div class="card-body">
-                <div style="line-height: 1.8;">
-                    <p><strong>1. 如何防止普通用户删除数据？</strong></p>
-                    <p style="padding-left: 1rem; color: #666;">
-                        ① <strong>应用层验证</strong>：只有登录用户才能执行删除操作<br>
-                        ② <strong>权限控制</strong>：删除需要管理员权限或商品所有者权限<br>
-                        ③ <strong>前端隐藏</strong>：普通用户界面不显示删除按钮<br>
-                        ④ <strong>API验证</strong>：后端检查用户身份和权限
-                    </p>
-
-                    <p style="margin-top: 1rem;"><strong>2. 如何限制用户只能查询数据？</strong></p>
-                    <p style="padding-left: 1rem; color: #666;">
-                        ① <strong>只读API</strong>：提供查询接口，隐藏增删改接口<br>
-                        ② <strong>数据库权限</strong>：设置只读用户角色<br>
-                        ③ <strong>会话验证</strong>：区分普通用户和管理员<br>
-                        ④ <strong>操作日志</strong>：记录所有数据操作便于审计
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>
